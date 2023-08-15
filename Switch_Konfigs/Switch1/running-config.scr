@@ -1,0 +1,188 @@
+hostname Switch-1
+
+vlan database
+vlan 10,20,30,999
+vlan name 10 "MANAGEMENT"
+vlan name 20 "AES"
+vlan name 30 "AVB"
+vlan name 999 "NOT USED"
+
+set igmp-plus 20
+set igmp querier election participate 20
+set igmp querier election participate 30
+set igmp querier election participate 10
+
+exit
+configure
+no mvrp include factory-default-vlan
+
+set igmp 
+set igmp-plus
+set igmp querier address 6.6.6.6
+
+spanning-tree mode rapid-pvst
+spanning-tree port mode all
+spanning-tree uplinkfast
+
+logging buffered 7
+logging buffered wrap
+logging console 4 
+
+sntp server "192.168.10.20"
+
+username "admin" password $6$olSjbeEzGoVb.yP1$/MowOnJhcbySVeAoWDPmeirWf2UHfy3cmFbla2hjlKl8bwMQwK0bC8Jje4t7hogqtm4u1zBtQmOxk3YfT/Pgo. encryption-type sha512 level 15 encrypted
+
+line console
+exit
+line telnet
+exit
+line ssh
+exit
+no port-channel auto
+snmp-server sysname "Switch-1"
+!
+no switchport mode auto
+ip access-list NET-BLOCK
+exit
+
+classofservice trust dot1p
+classofservice ip-dscp-mapping 34 4
+classofservice ip-dscp-mapping 46 5
+classofservice ip-dscp-mapping 56 6
+cos-queue strict 4 5 6
+dot1as
+mvrp
+mmrp
+msrp
+msrp max-fan-in-ports 10
+
+interface 0/1
+mtu 1500
+vlan participation include 30
+vlan participation exclude 1,10,20
+vlan tagging 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+spanning-tree auto-edge
+exit
+
+interface 0/2
+vlan participation include 10,20
+vlan participation exclude 1,30
+vlan tagging 10,20
+ptp clock e2e-transparent
+spanning-tree auto-edge
+exit          
+    
+interface 0/3
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1,20,10
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+spanning-tree auto-edge
+exit
+
+interface 0/4
+vlan pvid 20
+vlan participation exclude 1,30,10
+vlan participation include 20
+ptp clock e2e-transparent
+spanning-tree auto-edge
+exit
+
+interface 0/5
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1,20,10
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+spanning-tree auto-edge
+exit
+
+interface 0/6
+vlan pvid 20
+vlan participation exclude 1,30,10
+vlan participation include 20
+ptp clock e2e-transparent
+spanning-tree auto-edge
+exit
+
+interface 0/7
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1,20,10
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+spanning-tree auto-edge
+exit
+
+interface 0/8
+vlan pvid 20
+vlan participation exclude 1,30,10
+vlan participation include 20
+ptp clock e2e-transparent
+spanning-tree auto-edge
+exit
+
+interface 0/9
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1,20,10
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+spanning-tree auto-edge
+exit
+
+interface 0/10
+vlan pvid 20
+vlan participation exclude 1,30,10
+vlan participation include 20
+ptp clock e2e-transparent
+spanning-tree auto-edge
+exit
+
+interface 0/11
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1,20,10
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+spanning-tree auto-edge
+exit
+
+interface 0/12
+vlan pvid 10
+vlan participation exclude 1,20,30
+vlan participation include 10
+exit
+
+ip management vlan 10 192.168.10.1 255.255.255.0
+exit
+
+ip ssh server enable
+ip ssh pubkey-auth
+sshcon timeout 60

@@ -1,0 +1,206 @@
+!Current Configuration:
+!
+!System Description "M4250-10G2F-PoE+ 10x1G PoE+ 125W and 2xSFP Managed Switch, 13.0.4.13, 1.0.0.11"
+!System Software Version "13.0.4.13"
+!System Up Time          "0 days 1 hrs 57 mins 23 secs"
+!Additional Packages     QOS,Multicast,IPv6,IPv6 Management,Routing
+!Current SNTP Synchronized Time: SNTP Last Attempt Status Is Not Successful
+!
+vlan database
+vlan 10,20,30,999
+vlan name 10 "MANAGEMENT"
+vlan name 20 "AES"
+vlan name 30 "AVB"
+vlan name 999 "NOT USED"
+set igmp-plus 20
+set igmp-plus 30
+set igmp 20
+vlan routing 10 1
+vlan routing 20 2
+vlan routing 30 3
+exit
+configure
+sntp server "192.168.10.20"
+mvrp
+username "admin" password 9afef8328ee09d9287d39b4a3439ea82dd7eb1fc6b739535e89e9da4970a9c0d947613460e5baadb0198b1cc06b10d4043508061325b04e7b5022841b0659757 level 15 encrypted
+line console
+exit
+line telnet
+exit
+line ssh
+exit
+no port-channel auto
+snmp-server sysname "Switch-3"
+!
+no switchport mode auto
+ip access-list NET-BLOCK
+exit
+set igmp querier address 3.3.3.3
+classofservice trust dot1p
+classofservice ip-dscp-mapping 34 4
+classofservice ip-dscp-mapping 46 5
+classofservice ip-dscp-mapping 56 6
+cos-queue strict 4 5 6
+dot1as
+mmrp
+msrp
+msrp max-fan-in-ports 10
+
+access-list 101 deny ip any 192.168.10.0 0.0.0.255
+access-list 102 deny ip any 192.168.20.0 0.0.0.255
+access-list 103 deny ip any 192.168.30.0 0.0.0.255
+access-list 104 permit ip any any
+
+interface 0/1
+ip access-group 101 in 1
+ip access-group 102 in 2
+ip access-group 104 in 3
+mtu 1500
+vlan participation include 30
+vlan participation exclude 1
+vlan tagging 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+interface 0/2
+ip access-group 103 in 1
+ip access-group 104 in 2
+vlan participation include 10,20
+vlan participation exclude 1
+vlan tagging 10,20
+ptp clock e2e-transparent
+exit              
+interface 0/3
+ip access-group 101 in 1
+ip access-group 102 in 2
+ip access-group 104 in 3
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+interface 0/4
+ip access-group 103 in 1
+ip access-group 104 in 2
+vlan pvid 20
+vlan participation exclude 1
+vlan participation include 20
+ptp clock e2e-transparent
+exit
+interface 0/5
+ip access-group 101 in 1
+ip access-group 102 in 2
+ip access-group 104 in 3
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+interface 0/6
+ip access-group 103 in 1
+ip access-group 104 in 2
+vlan pvid 20
+vlan participation exclude 1
+vlan participation include 20
+ptp clock e2e-transparent
+exit
+interface 0/7
+ip access-group 101 in 1
+ip access-group 102 in 2
+ip access-group 104 in 3
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+interface 0/8
+ip access-group 103 in 1
+ip access-group 104 in 2
+vlan pvid 20
+vlan participation exclude 1
+vlan participation include 20
+ptp clock e2e-transparent
+exit
+interface 0/9
+ip access-group 101 in 1
+ip access-group 102 in 2
+ip access-group 104 in 3
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+interface 0/10
+ip access-group 103 in 1
+ip access-group 104 in 2
+vlan pvid 20
+vlan participation exclude 1
+vlan participation include 20
+ptp clock e2e-transparent
+exit
+interface 0/11
+ip access-group 101 in 1
+ip access-group 102 in 2
+ip access-group 104 in 3
+mtu 1500
+vlan pvid 30
+vlan participation exclude 1
+vlan participation include 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+interface 0/12
+ip access-group 102 in 1
+ip access-group 103 in 2
+ip access-group 104 in 3
+vlan pvid 10
+vlan participation exclude 1
+vlan participation include 10
+exit
+interface vlan 10
+routing
+ip address 192.168.10.3 255.255.255.0
+exit
+interface vlan 20
+routing
+ip address 192.168.20.3 255.255.255.0
+exit
+interface vlan 30
+routing
+ip address 192.168.30.3 255.255.255.0
+exit
+ip management vlan 10 192.168.10.3 255.255.255.0
+ip management source-interface vlan 10
+router rip
+exit
+ip route 0.0.0.0 0.0.0.0 192.168.10.254
+exit
+ip ssh server enable
+ip ssh pubkey-auth
+sshcon timeout 60

@@ -1,0 +1,86 @@
+
+vlan database
+vlan 200
+vlan name 200 "avb"
+vlan routing 1 1
+exit
+
+configure
+no mvrp include factory-default-vlan
+mvrp
+username "admin" password $6$lqimd6yJpvsPM9OV$iNJnuHyLDSLSpZmIf.n7E4.SIy//HSZZeudrS5loXNuMmwCy40pkkenwISuckYakEDv.qjzwITF0fGg5W2kGG/ encryption-type sha512 level 15 encrypted
+
+
+line console
+exit              
+                  
+line telnet       
+exit              
+                  
+line ssh          
+exit
+
+no port-channel auto
+!
+snmp-server user "admin" DefaultWrite auth-sha512-key 79f3215e41c7e062b4eecc7e5231dc20759f063136c1c9cbec28dcc39e7aba4800a97e41a654970a96cead50c7bfdbda7fb36ce298d0c340b194b753ad088ed4
+classofservice trust dot1p
+dot1as
+mmrp
+msrp
+
+interface 0/1
+mtu 1500
+vlan pvid 200
+vlan participation exclude 1
+vlan participation include 200
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+
+                  
+
+interface 0/2
+mtu 1500
+vlan pvid 200
+vlan participation exclude 1
+vlan participation include 200
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+
+interface 0/3
+mtu 1500
+vlan pvid 200
+vlan participation exclude 1
+vlan participation include 200
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+
+interface 0/4
+mtu 1500
+vlan pvid 200
+vlan participation exclude 1
+vlan participation include 200
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+
+
+router rip
+exit              
+
+exit
+

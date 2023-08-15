@@ -1,0 +1,146 @@
+hostname Switch-5-Core
+
+vlan database
+vlan 10,20,30,999
+vlan name 10 "MANAGEMENT"
+vlan name 20 "AES"
+vlan name 30 "AVB"
+vlan name 999 "NOT USED"
+
+set igmp-plus 10
+set igmp-plus 20
+set igmp-plus 30
+set igmp querier election participate 20
+set igmp querier election participate 30
+set igmp querier election participate 10
+
+exit
+configure
+no mvrp include factory-default-vlan
+
+set igmp 
+set igmp-plus
+set igmp querier address 1.1.1.1
+
+spanning-tree mode rapid-pvst
+spanning-tree port mode all
+spanning-tree uplinkfast
+
+logging buffered 7
+logging buffered wrap
+logging console 4 
+
+sntp server "192.168.10.20"
+
+username "admin" password $6$H2VnLeDwKHJyVRyI$2kvY/othRUyS9tc4kp30qur08KU.6zOF6aXMcAijNCPBjePg0F1k9MZ1Eij44OMq1LV6ceRbXfx2Ju9hHwR3A1 encryption-type sha512 level 15 encrypted
+line console
+exit
+line telnet
+exit
+line ssh
+exit
+no port-channel auto
+snmp-server sysname "Switch-5-Core"
+no switchport mode auto
+ip access-list NET-BLOCK
+exit
+
+classofservice trust dot1p
+classofservice ip-dscp-mapping 34 4
+classofservice ip-dscp-mapping 46 5
+classofservice ip-dscp-mapping 56 6
+cos-queue strict 4 5 6
+dot1as
+mvrp
+mmrp
+msrp
+msrp max-fan-in-ports 10
+
+interface 0/1
+mtu 1500
+vlan participation include 30
+vlan participation exclude 1,10,20
+vlan tagging 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+
+interface 0/2
+vlan participation include 10,20
+vlan participation exclude 1,30
+vlan tagging 10,20
+ptp clock e2e-transparent
+exit
+
+interface 0/3
+mtu 1500
+mtu 1500
+vlan participation include 30
+vlan participation exclude 1,10,20
+vlan tagging 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+
+interface 0/4
+vlan participation include 10,20
+vlan participation exclude 1,30
+vlan tagging 10,20
+ptp clock e2e-transparent
+exit
+
+interface 0/5
+mtu 1500
+vlan participation include 30
+vlan participation exclude 1,10,20
+vlan tagging 30
+dot1as
+dot1as pdelay-threshold 10000
+mvrp
+mmrp
+msrp
+exit
+
+interface 0/6
+vlan participation include 10,20
+vlan participation exclude 1,30
+vlan tagging 10,20
+ptp clock e2e-transparent
+exit
+
+interface 0/7
+switchport mode access
+switchport access vlan 999
+vlan pvid 999
+exit
+
+interface 0/8
+switchport mode access
+switchport access vlan 999
+vlan pvid 999
+exit
+
+interface 0/9
+switchport mode access
+switchport access vlan 999
+vlan pvid 999
+exit
+
+interface 0/10
+switchport mode access
+switchport access vlan 999
+vlan pvid 999
+exit
+
+ip management vlan 10 192.168.10.5 255.255.255.0
+
+exit
+ip ssh server enable
+ip ssh pubkey-auth
+sshcon timeout 60
